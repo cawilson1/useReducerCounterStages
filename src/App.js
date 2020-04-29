@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React from "react";
 import "./App.css";
 import {
   incrementCounter,
@@ -9,41 +9,45 @@ import {
   allowIncrementByN
 } from "./actions";
 import { reducer } from "./reducers";
-
-const initialState = {
-  counter: 0,
-  n: 0,
-  allowed: true
-};
+import { CreateStore } from "./store";
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
-  console.log("state", state);
+  const store = CreateStore(reducer);
+  console.log(store.getState());
   return (
     <div className="App">
       <header className="App-header">
-        <div>{state.counter}</div>
-        <button onClick={() => dispatch(incrementCounter())}>Increment</button>
-        <button onClick={() => dispatch(decrementCounter())}>Decrement</button>
+        <div>{store.getState().counter}</div>
+        <button onClick={() => store.dispatch(incrementCounter())}>
+          Increment
+        </button>
+        <button onClick={() => store.dispatch(decrementCounter())}>
+          Decrement
+        </button>
 
         <div>
           <label>Number to increment by</label>
-          <input onChange={e => dispatch(updateN(Number(e.target.value)))} />
+          <input
+            onChange={e => store.dispatch(updateN(Number(e.target.value)))}
+          />
           <br />
           <button
-            onClick={() => dispatch(incrementByN())}
-            disabled={!state.allowed}
+            onClick={() => store.dispatch(incrementByN())}
+            disabled={!store.getState().allowed}
           >
             Increment by n
           </button>
           <button
-            onClick={() => dispatch(decrementByN())}
-            disabled={!state.allowed}
+            onClick={() => store.dispatch(decrementByN())}
+            disabled={!store.getState().allowed}
           >
             Decrement by n
           </button>
         </div>
-        <input type="checkbox" onChange={() => dispatch(allowIncrementByN())} />
+        <input
+          type="checkbox"
+          onChange={() => store.dispatch(allowIncrementByN())}
+        />
       </header>
     </div>
   );
