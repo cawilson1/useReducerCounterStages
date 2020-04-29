@@ -9,6 +9,8 @@ const UPDATE_N = "UPDATE_N";
 const INCREMENT_BY_N = "INCREMENT_BY_N";
 const DECREMENT_BY_N = "DECREMENT_BY_N";
 
+const ALLOW_INCREMENT_BY_N = "ALLOW_INCREMENT_BY_N";
+
 const reducer = (state, action) => {
   switch (action.type) {
     case INCREMENT_COUNTER:
@@ -21,6 +23,8 @@ const reducer = (state, action) => {
       return { ...state, counter: state.counter + state.n };
     case DECREMENT_BY_N:
       return { ...state, counter: state.counter - state.n };
+    case ALLOW_INCREMENT_BY_N:
+      return { ...state, allowed: !state.allowed };
     default:
       return state;
   }
@@ -28,7 +32,8 @@ const reducer = (state, action) => {
 
 const initialState = {
   counter: 0,
-  n: 0
+  n: 0,
+  allowed: true
 };
 
 function incrementCounter() {
@@ -49,6 +54,10 @@ function decrementByN() {
   return { type: DECREMENT_BY_N };
 }
 
+function allowIncrementByN() {
+  return { type: ALLOW_INCREMENT_BY_N };
+}
+
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   console.log("state", state);
@@ -63,13 +72,20 @@ function App() {
           <label>Number to increment by</label>
           <input onChange={e => dispatch(updateN(Number(e.target.value)))} />
           <br />
-          <button onClick={() => dispatch(incrementByN())}>
+          <button
+            onClick={() => dispatch(incrementByN())}
+            disabled={!state.allowed}
+          >
             Increment by n
           </button>
-          <button onClick={() => dispatch(decrementByN())}>
+          <button
+            onClick={() => dispatch(decrementByN())}
+            disabled={!state.allowed}
+          >
             Decrement by n
           </button>
         </div>
+        <input type="checkbox" onChange={() => dispatch(allowIncrementByN())} />
       </header>
     </div>
   );
